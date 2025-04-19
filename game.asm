@@ -2854,6 +2854,23 @@ WaitForBottom: {
 		rts
 }
 
+KeyMasks: {
+	Horizontal:
+		.byte %00001100
+		.byte %00001000
+	Vertical:
+		.byte %00000011
+		.byte %00000001
+		.byte %00000000
+		.byte %00000000
+		.byte %00000000
+		.byte %00000000
+		.byte %00000100
+		.byte %00000000
+		.byte %00000010
+		.byte %00000000
+}
+
 ProcessInput: {
 		lda #TED.InputLatch_None
 		sta TED.KeyboardLatch
@@ -2861,6 +2878,36 @@ ProcessInput: {
 		sta TED.InputLatch
 		lda TED.InputLatch
 		eor #$ff // %F000RLDU
+		sta Input.Buffer
+
+		lda #$df // Up/Down
+		sta TED.KeyboardLatch
+		sta TED.InputLatch
+		lda TED.InputLatch
+		and #$09
+		tax
+		lda KeyMasks.Vertical,x
+		ora Input.Buffer
+		sta Input.Buffer
+
+		lda #$bf // Left/Right
+		sta TED.KeyboardLatch
+		sta TED.InputLatch
+		lda TED.InputLatch
+		and #$09
+		tax
+		lda KeyMasks.Horizontal,x
+		ora Input.Buffer
+		sta Input.Buffer
+
+		lda #$fe // Return
+		sta TED.KeyboardLatch
+		sta TED.InputLatch
+		lda #%00000010
+		bit TED.InputLatch
+		bne Horizontal
+		lda Input.Buffer
+		ora #%10000000
 		sta Input.Buffer
 
 	Horizontal: {
@@ -4469,13 +4516,6 @@ MenuFadeLumas:
 
 * = * "Small Display Tables"
 
-.var instructionsLumas = LoadBinary("graphics/kye-instructions - CharAttribs_L1.bin")
-InstructionsLumas:
-	.fill instructionsLumas.getSize(), (instructionsLumas.uget(i) & $07) << 3
-
-InstructionsChromas:
-	.import binary "graphics/kye-instructions - CharAttribs_L2.bin"
-
 PlayerSpawnColors:
 	.byte $71, $7f, $7f, $6f, $6f, $5f, $5f
 .label PlayerSpawnPhase = <(PlayerSpawnColors - *)
@@ -4677,6 +4717,15 @@ UpdateAddressesHigh:
 	.for (var i = Piece.Active; i < Piece.Unused; i++) {
 		.byte updateAddresses.containsKey(i) ? >updateAddresses.get(i) : >NextObject
 	}
+
+* = * "Instructions Colours"
+
+.var instructionsLumas = LoadBinary("graphics/kye-instructions - CharAttribs_L1.bin")
+InstructionsLumas:
+	.fill instructionsLumas.getSize(), (instructionsLumas.uget(i) & $07) << 3
+
+InstructionsChromas:
+	.import binary "graphics/kye-instructions - CharAttribs_L2.bin"
 
 * = * "Level Data"
 

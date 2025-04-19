@@ -6,7 +6,7 @@ This is the Commodore Plus/4 port of Colin Garbutt's puzzle game from 1992, Kye,
 
 After porting [Stunt Car Racer](https://plus4world.powweb.com/software/Stunt_Car_Racer) to the Plus/4, I got quite familiar with the TED chip, and I realised that the C64 version of Kye could be ported over with ease due to the fact that it doesn't rely much on sprites. The only real challenge was to figure out a way to recreate the SID music given the much more limited capabilities of the TED.
 
-The goal of the game is simple: move around with the green circle thing and collect all the diamonds. It's up to you to discover the rules! The game is controlled with the joystick in port 2 exclusively; there's no keyboard input.
+The goal of the game is simple: move around with the green circle thing and collect all the diamonds. It's up to you to discover the rules! The game can be controlled with either the joystick in port 2, or the arrow keys and Return.
 
 ## Build Instructions
 
